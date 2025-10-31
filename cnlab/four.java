@@ -1,7 +1,7 @@
 package cnlab;
 import java.util.*;
 public class four {
-    public static void main(String[] args){
+    public static void Main (String[] args){
         Scanner sc=new Scanner(System.in);
         System.out.println("Enter the no of vertices:");
         int n=sc.nextInt();
