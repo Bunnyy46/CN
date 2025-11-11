@@ -22,7 +22,7 @@ public class Main {
         int count=0;
         for(int i=0;i<bit.length();i++){
             st.append(bit.charAt(i));
-            count=(st.charAt(i)=='1')?count+1:0;
+            count=(bit.charAt(i)=='1')?count+1:0;
             if(count==5){
                 st.append('0');
                 count=0;
