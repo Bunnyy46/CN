@@ -1,45 +1,36 @@
-import java.util.*;
+import numpy as np
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+X = [
+    [1,2],
+    [2,3],
+    [3,4],
+    [4,4],
+    [5,3],
+    [6,4],
+    [7,3],
+    [8,2],
+    [9,3],
+    [10,2]
+]
 
-public class DistanceVectorRouting {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter number of nodes: ");
-        int n = sc.nextInt();
-        int[][] cost = new int[n][n];
+y = [5, 7, 9, 11, 13, 15, 17, 19, 21, 23]
 
-        System.out.println("Enter adjacency matrix (use 999 for infinity):");
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                cost[i][j] = sc.nextInt();
+X = np.array(X)
+y = np.array(y)
 
-        // Initialize distance vectors
-        int[][] dist = new int[n][n];
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                dist[i][j] = cost[i][j];
+model = LinearRegression()
+model.fit(X, y)
 
-        boolean updated;
-        do {
-            updated = false;
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    for (int k = 0; k < n; k++) {
-                        if (dist[i][k] + dist[k][j] < dist[i][j]) {
-                            dist[i][j] = dist[i][k] + dist[k][j];
-                            updated = true;
-                        }
-                    }
-                }
-            }
-        } while (updated); // Repeat until no change (convergence)
+y_pred = model.predict(X)
 
-        // Print routing tables
-        System.out.println("\nRouting tables (distance vector at each node):");
-        for (int i = 0; i < n; i++) {
-            System.out.println("From Node " + i + ":");
-            for (int j = 0; j < n; j++)
-                System.out.print(dist[i][j] + " ");
-            System.out.println();
-        }
-    }
-}
+print("Coefficient:", model.coef_)
+print("Intercept:", model.intercept_)
+
+plt.scatter(X[:,0], y, label="Actual",color='red')
+plt.plot(X, y_pred, label="Predicted", linewidth=0.2)
+plt.xlabel("X")
+plt.ylabel("y")
+plt.title("MULTI Linear Regression")
+plt.legend()
+plt.show()
