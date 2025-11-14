@@ -1,44 +1,30 @@
-package cnlab;
-import java.util.Scanner;
 
-public class five {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+data = [
+    ['Sunny', 'Warm',  'Normal', 'Strong', 'Warm', 'Same',   'Yes'],
+    ['Sunny', 'Warm',  'High',   'Strong', 'Warm', 'Same',   'Yes'],
+    ['Rainy', 'Cold',  'High',   'Strong', 'Warm', 'Change', 'No'],
+    ['Sunny', 'Warm',  'High',   'Strong', 'Cool', 'Change', 'Yes']
+]
 
-        System.out.println("Enter number of vertices:");
-        int n = sc.nextInt();
+S=['0']*6
+G=[['?']*6]
 
-        int[][] net = new int[n][n];
-        System.out.println("Enter the adjacency matrix:");
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                net[i][j] = sc.nextInt();
+for r in data:
+    feats=r[:-1]
+    label=r[-1]
+    if label=='Yes':
+        for j in range(6):
+            if S[j]=='0' :
+                S[j]=feats[j]
+            elif S[j]!=feats[j]:
+                S[j]='?'
+    else:
+        for j in range(6):
+            if S[j]!=feats[j]:
+                temp=S.copy()
+                temp[j]='?'
+                G.append(temp)
 
-        boolean[] vis = new boolean[n];
-        vis[0] = true; // Start from vertex 0
-        int cost = 0;
-
-        System.out.println("\nEdges in the Minimum Spanning Tree:");
-        for (int e = 0; e < n - 1; e++) {
-            int min = 999, a = -1, b = -1;
-
-            for (int i = 0; i < n; i++) {
-                if (vis[i]) {
-                    for (int j = 0; j < n; j++) {
-                        if (!vis[j] && net[i][j] != 0 && net[i][j] < min) {
-                            min = net[i][j];
-                            a = i;
-                            b = j;
-                        }
-                    }
-                }
-            }
-
-            System.out.println(a + " - " + b + " : " + min);
-            vis[b] = true;
-            cost += min;
-        }
-
-        System.out.println("\nTotal cost of Minimum Spanning Tree: " + cost);
-    }
-}
+print(S)
+print(G)
+        
