@@ -1,37 +1,29 @@
-package cnlab;
-import java.util.*;
+from sklearn.cluster import KMeans
 
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+import matplotlib.pyplot as plt
+import numpy as np
+X = np.array([[1,2],[1.5,1.8],[5,8],[8,8],[1,0.6],[9,11],[8,2],[10,2],[9,3]])
 
-        int bucket = 10; // Max bucket capacity
-        int rate = 3;    // Leakage/output rate
-        int store = 0;   // Current stored data
 
-        System.out.print("Enter number of packets: ");
-        int n = sc.nextInt();
-        int[] pkt = new int[n];
+kmeans=KMeans(n_clusters=3,random_state=42).fit(X)
 
-        System.out.println("Enter packet sizes:");
-        for (int i = 0; i < n; i++) pkt[i] = sc.nextInt();
+plt.scatter(X[:,0],X[:,1],c=kmeans.labels_)
+plt.scatter(kmeans.cluster_centers_[:,0],kmeans.cluster_centers_[:,1],s=100,marker='X')
+plt.title("KMeans")
+plt.grid(True)
 
-        for (int i = 0; i < n; i++) {
-            int p = pkt[i];
-            System.out.println("\nIncoming packet size: " + p);
 
-            if (p + store > bucket)
-                System.out.println("Overflow! Packet dropped.");
-            else {
-                store += p;
-                System.out.println("Packet accepted.");
-            }
+from sklearn.cluster import KMeans
 
-            System.out.println("Data in bucket before leak: " + store);
-            store = Math.max(0, store - rate);
-            System.out.println("Data in bucket after leak: " + store);
-        }
+import matplotlib.pyplot as plt
+import numpy as np
+X = np.array([[1],[1.5],[5],[8],[1],[9],[8],[10],[9]]).reshape(-1,1)
 
-        sc.close();
-    }
-}
+
+kmeans=KMeans(n_clusters=2,random_state=42).fit(X)
+y=np.zeros(len(X))
+
+plt.scatter(X[:,0],y,c=kmeans.labels_)
+plt.scatter(kmeans.cluster_centers_[:,0],[0,1],s=100,marker='X')
+plt.title("KMeans")
+plt.grid(True)
