@@ -168,30 +168,25 @@ for i in range(1, len(s)):
 
 
 
-import nltk
-from nltk import CFG
-from nltk.parse import ShiftReduceParser
+from sklearn.linear_model import LogisticRegression
 
-# Define grammar
-g = CFG.fromstring("""
-S  -> NP VP
-NP -> DT NN
-VP -> V NP
-DT -> 'the'
-NN -> 'boy' | 'ball'
-V  -> 'hit'
-""")
+# Train a simple dummy model
+m = LogisticRegression().fit([[1], [0]], [1, 0])
 
-# Create parser with trace enabled
-p = ShiftReduceParser(g, trace=2)
+# Input text (tokenized by space)
+t = "Wow! Is this working? Yes it is.".split()
 
-# Input sentence
-s = "the boy hit the ball".split()
+# Output list
+o = [t[0]]
 
-# Parse (this will print Shift-Reduce actions automatically)
-for tree in p.parse(s):
-    print("\nFinal Parse Tree:\n")
-    tree.pretty_print()
+for i in range(1, len(t)):
+    
+    if t[i - 1][-1] in ".!?" and m.predict([[t[i][0].isupper()]])[0]:
+        o.append(t[i])
+    else:
+        o[-1] += " " + t[i]
+
+print(o)
 
 
 
