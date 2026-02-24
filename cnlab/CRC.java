@@ -1,46 +1,199 @@
-from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
-import matplotlib.pyplot as plt
-import numpy as np
-X=np.array([[1,19,19000],[1,35,20000],[0,26,43000],[0,27,5700]])
-y=np.array([0,0,1,0])
-X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.3,random_state=42)
-knn=KNeighborsClassifier(n_neighbors=2)
-knn.fit(X_train,y_train)
-y_pred=knn.predict(X_test)
-print("Actual",y_train)
-print("Pred",y_pred)
-plt.scatter(X_train[:,0],X_train[:,2],c=y_train,s=150,label="actual")
-plt.scatter(X_test[:,0],X_test[:,2],c=y_pred,s=200,marker="X",label="predicted")
-plt.title("KNN")
-plt.grid(True)
-plt.legend()
+def gap_tokenize(text):
+    words = []
+    word = ""
+    
+    for ch in text:
+        if ch == " ":
+            if word != "":
+                words.append(word)
+                word = ""
+        else:
+            word += ch
+    
+    if word != "":
+        words.append(word)
+    
+    return words
 
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
-import numpy as np
-import matplotlib.pyplot as plt
-X = np.array([
-    [1, 2],
-    [3, 2],
-    [4, 2],
-    [1, 4],
-    [2, 6],
-    [2, 7],
-])
-y = np.array([1, 0, 1, 0, 0, 1])
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.5, random_state = 42)
-knn = KNeighborsClassifier(n_neighbors=3)
-knn.fit(X_train, y_train)
-y_pred = knn.predict(X_test)
-print("Actual:", y_train)
-print("Predicted:", y_pred)
-plt.scatter(X_train[:, 0], X_train[:, 1], c = y_train,s= 80, label =  'Actual')
-plt.scatter(X_test[:, 0], X_test[:, 1], c  = y_pred, s =  100, marker = '*', label = 'Predicted')
-plt.title("KNN")
-plt.grid(True)
-plt.legend()
-plt.xlabel("Feature 1")
-plt.ylabel("Feature 2")
-plt.show()
+
+sentence = input("Enter the sentence: ")
+tokens = gap_tokenize(sentence)
+
+print("Tokens are:")
+for t in tokens:
+    print(t)
+
+
+
+
+
+
+
+        
+def porter_stem(word):
+    prefixes = ['un', 'miss', 'pre', 'non', 'uni']
+    suffixes = ['ing', 'al', 'ed', 'ious', 'ive', 'ness']
+    
+    for prefix in prefixes:
+        if word.startswith(prefix):
+            word = word[len(prefix):]
+    
+    for suffix in suffixes:
+        if word.endswith(suffix):
+            word = word[:-len(suffix)]
+    
+    return word
+
+
+words = ['playing', 'unimportant', 'happiness', 'national']
+
+for word in words:
+    print(word, "->", porter_stem(word))
+
+
+
+
+
+
+import nltk
+from nltk import CFG
+from nltk.tree import Tree
+
+grammar = CFG.fromstring("""
+S  -> NP VP
+NP -> DT NN
+VP -> V NP
+VP -> V NP PP
+PP -> P NP
+
+DT -> 'the'
+NN -> 'bat' | 'ball' | 'boy'
+V  -> 'hit'
+P  -> 'with'
+""")
+
+parser = nltk.ChartParser(grammar)
+
+sentence = "the boy hit the ball with the bat".split()
+
+for tree in parser.parse(sentence):
+    tree.pretty_print()
+
+
+
+
+
+import nltk
+from nltk import CFG
+from nltk.parse import ShiftReduceParser
+
+# Define grammar
+g = CFG.fromstring("""
+S  -> NP VP
+NP -> DT NN
+VP -> V NP
+DT -> 'the'
+NN -> 'boy' | 'ball'
+V  -> 'hit'
+""")
+
+# Create parser with trace enabled
+p = ShiftReduceParser(g, trace=2)
+
+# Input sentence
+s = "the boy hit the ball".split()
+
+# Parse (this will print Shift-Reduce actions automatically)
+for tree in p.parse(s):
+    print("\nFinal Parse Tree:\n")
+    tree.pretty_print()
+
+
+
+import nltk
+from nltk.grammar import DependencyGrammar
+from nltk.parse import ProjectiveDependencyParser
+
+# Define dependency grammar
+grammar = DependencyGrammar.fromstring("""
+'hit' -> 'boy' | 'ball'
+'boy' -> 'the'
+'ball' -> 'the'
+""")
+
+# Create parser
+parser = ProjectiveDependencyParser(grammar)
+
+# Input sentence
+sentence = "the boy hit the ball".split()
+
+# Parse
+for tree in parser.parse(sentence):
+    tree.pretty_print()
+
+
+
+
+from sklearn.linear_model import LogisticRegression
+
+# Train a dummy logistic regression model
+m = LogisticRegression().fit([[0], [1]], [0, 1])
+
+s = [
+    "AI is powerful",
+    "Machine learning improves AI",
+    "Football is popular",
+    "The match was exciting"
+]
+
+t = 1
+print("TOPIC", t, ":")
+print(s[0])
+
+prev = 1
+
+for i in range(1, len(s)):
+    # Check if consecutive sentences share at least one common word
+    o = len(set(s[i - 1].split()) & set(s[i].split())) > 0
+
+    # Topic change condition
+    if prev and not o and m.predict([[1]])[0]:
+        t += 1
+        print("\nTOPIC", t, ":")
+
+    print(s[i])
+    prev = o
+
+
+
+
+
+import nltk
+from nltk import CFG
+from nltk.parse import ShiftReduceParser
+
+# Define grammar
+g = CFG.fromstring("""
+S  -> NP VP
+NP -> DT NN
+VP -> V NP
+DT -> 'the'
+NN -> 'boy' | 'ball'
+V  -> 'hit'
+""")
+
+# Create parser with trace enabled
+p = ShiftReduceParser(g, trace=2)
+
+# Input sentence
+s = "the boy hit the ball".split()
+
+# Parse (this will print Shift-Reduce actions automatically)
+for tree in p.parse(s):
+    print("\nFinal Parse Tree:\n")
+    tree.pretty_print()
+
+
+
+
+    
