@@ -191,4 +191,161 @@ print(o)
 
 
 
+
+
+# Simple Lesk Algorithm for WSD
+import nltk
+nltk.download('wordnet')
+nltk.download('omw-1.4')   # optional but recommended
+from nltk.corpus import wordnet as wn
+
+def lesk_algorithm(word, sentence):
+    best_sense = None
+    max_overlap = 0
+    
+    context = set(sentence.split())
+    
+    for sense in wn.synsets(word):
+        definition = set(sense.definition().split())
+        
+        overlap = len(context.intersection(definition))
+        
+        if overlap > max_overlap:
+            max_overlap = overlap
+            best_sense = sense
+    
+    return best_sense
+
+# Test
+sentence = "I went to the bank to deposit money"
+word = "bank"
+
+sense = lesk_algorithm(word, sentence)
+print("Word:", word)
+print("Sense:", sense)
+
+
+
+
+
+
+
+
+
+
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+
+# Training data
+sentences = [
+    "I deposited money in the bank",
+    "The river bank is beautiful"
+]
+
+labels = ["finance", "river"]  # meanings of "bank"
+
+# Convert text to features nk
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(sentences)
+
+# Train model
+model = MultinomialNB()
+model.fit(X, labels)
+
+# Test
+test_sentence = ["bank is beautifull"]
+test_X = vectorizer.transform(test_sentence)
+
+prediction = model.predict(test_X)
+
+print("Sentence:", test_sentence[0])
+print("Predicted Sense:", prediction[0])
+
+
+
+
+
+
+
+#11)Predicate Argument Structure
+import nltk
+
+# Sample sentence
+sentence = "Ram eats mango"
+
+# Step 1: Tokenization using split (safe)
+words = sentence.split()
+
+# Step 2: Use NLTK FreqDist (just to show NLTK usage)
+freq = nltk.FreqDist(words)
+
+# Step 3: Rule-based verb detection
+verbs = ["eat", "eats", "run", "runs", "go", "goes"]
+
+predicate = None
+arguments = []
+
+for word in words:
+    if word.lower() in verbs and predicate is None:
+        predicate = word
+    else:
+        arguments.append(word)
+
+# Output
+print("Sentence:", sentence)
+print("Word Frequency (NLTK used):", freq)
+print("Predicate:", predicate)
+print("Arguments:", arguments)
+
+
+
+
+
+
+
+
+
+# Dictionary Lookup
+morph_dict = {
+    "children": "child",
+    "mice": "mouse",
+    "cars": "car"
+}
+
+word = input("Enter word: ")
+
+# 1. Dictionary Model
+if word in morph_dict:
+    root = morph_dict[word]
+    feature = "irregular (dictionary)"
+
+# 2. Finite State (Rule-Based)
+elif word.endswith("ing"):
+    root = word[:-3]
+    feature = "continuous"
+elif word.endswith("ed"):
+    root = word[:-2]
+    feature = "past tense"
+elif word.endswith("s"):
+    root = word[:-1]
+    feature = "plural"
+
+# 3. Unification (Feature tagging)
+else:
+    root = word
+    feature = "base form"
+
+# Output
+print("Word   :", word)
+print("Root   :", root)
+print("Feature:", feature)
+
+
+
+
+
+
+
+
+
     
